@@ -1,7 +1,6 @@
 import numpy as np
 from moviepy.editor import (
     VideoFileClip,
-    VideoClip,
     clips_array,
 )
 
@@ -36,7 +35,10 @@ def extract_section_by_pixels(input_video, output_video_clip, section):
     clip = VideoFileClip(input_video)
     section_start = section[0]
     section_end = section[1]
-    extracted_clip = clip.crop(x1=section_start, x2=section_end)
+    extracted_clip = clip.crop(
+        x1=section_start,
+        x2=section_end,
+    )
     # Ensure all extracted sections have the same height
     # extracted_clip = extracted_clip.resize(height=clip.h)
     extracted_clip.write_videofile(output_video_clip, codec="libx264")
@@ -78,6 +80,7 @@ def get_video_clips():
     for clip in video_clips:
         gamma_corrected_clip = gamma_correction(clip, GAMMA)
         edited_clips.append(gamma_corrected_clip)
+    # Return the cropped and gamma-corrected video clips
     return edited_clips
 
 
@@ -89,4 +92,8 @@ if __name__ == "__main__":
     # Use the row of vids to compose the clips_array matrix
     final_clip = clips_array([row_of_vids])
     # Write the final video
-    final_clip.write_videofile(OUTPUT_VIDEO, codec="libx264", fps=video_clips[0].fps)
+    final_clip.write_videofile(
+        OUTPUT_VIDEO,
+        codec="libx264",
+        fps=video_clips[0].fps,
+    )
