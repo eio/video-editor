@@ -16,12 +16,12 @@ OUTPUT_VIDEO = "output/triptych_output.mov"
 # and we want to divide the width into 3 equal sections,
 # we should divide 1280 by 3 to determine the pixel coordinates for each section.
 # In this case, each section would cover approximately 426.67 pixels in width.
-# Define pixel coordinates for each section
-# (left section, middle section, right section)
+# Define the adjusted pixel coordinates for each section
+# Adjust these values to ensure perfect alignment in the final triptych
 SECTIONS = [
-    (0, 426),
-    (426, 853),
-    (853, 1280),
+    (0, 426),  # Left section
+    (426, 854),  # Middle section
+    (854, 1280),  # Right section
 ]
 
 
@@ -35,7 +35,7 @@ def extract_section_by_pixels(input_video, output_video_clip, section):
     section_end = section[1]
     extracted_clip = clip.crop(x1=section_start, x2=section_end)
     # Ensure all extracted sections have the same height
-    extracted_clip = extracted_clip.resize(height=clip.h)
+    # extracted_clip = extracted_clip.resize(height=clip.h)
     extracted_clip.write_videofile(output_video_clip, codec="libx264")
 
 
