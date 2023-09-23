@@ -1,3 +1,4 @@
+import numpy as np
 from moviepy.editor import (
     VideoFileClip,
     VideoClip,
@@ -16,13 +17,15 @@ OUTPUT_VIDEO = "output/triptych_output.mov"
 # and we want to divide the width into 3 equal sections,
 # we should divide 1280 by 3 to determine the pixel coordinates for each section.
 # In this case, each section would cover approximately 426.67 pixels in width.
-# Define the adjusted pixel coordinates for each section
-# Adjust these values to ensure perfect alignment in the final triptych
+# Here we define the adjusted pixel coordinates for each section:
 SECTIONS = [
     (0, 426),  # Left section
-    (426, 854),  # Middle section
+    (427, 853),  # Middle section
     (854, 1280),  # Right section
 ]
+# Define the gamma value for correction
+# (adjust as needed)
+GAMMA = 1.5
 
 
 def extract_section_by_pixels(input_video, output_video_clip, section):
@@ -37,6 +40,13 @@ def extract_section_by_pixels(input_video, output_video_clip, section):
     # Ensure all extracted sections have the same height
     # extracted_clip = extracted_clip.resize(height=clip.h)
     extracted_clip.write_videofile(output_video_clip, codec="libx264")
+
+
+def gamma_correction(clip, gamma):
+    """
+    Apply gamma correction to a video clip.
+    """
+    return clip.fl_image(lambda frame: np.power(frame / 255.0, 1.0 / gamma) * 255.0)
 
 
 def get_video_clips():
@@ -62,7 +72,13 @@ def get_video_clips():
     video_clips = [
         VideoFileClip(path).set_duration(min_duration) for path in clip_output_paths
     ]
-    return video_clips
+    # Create edited clips output container
+    edited_clips = []
+    # Apply gamma correction to each clip
+    for clip in video_clips:
+        gamma_corrected_clip = gamma_correction(clip, GAMMA)
+        edited_clips.append(gamma_corrected_clip)
+    return edited_clips
 
 
 if __name__ == "__main__":
