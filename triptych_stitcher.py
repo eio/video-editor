@@ -24,8 +24,11 @@ SECTIONS = [
     (853, 1280),
 ]
 
-# Function to extract a specific section from a video by pixels
+
 def extract_section_by_pixels(input_video, output_video_clip, section):
+    """
+    Extract a specific section from a video by pixels
+    """
     print(f"Extracting section by pixels: `{input_video}`")
     clip = VideoFileClip(input_video)
     section_start = section[0]
@@ -36,8 +39,11 @@ def extract_section_by_pixels(input_video, output_video_clip, section):
     extracted_clip.write_videofile(output_video_clip, codec="libx264")
 
 
-# Function to load component clips and crop them accordingly
 def get_video_clips():
+    """
+    Load component clips and crop them
+    using dimensions defined in SECTIONS
+    """
     # The output paths of the clip sectinos
     clip_output_paths = []
     # Initialize with a very large value
@@ -51,25 +57,11 @@ def get_video_clips():
         clip_duration = VideoFileClip(input_video).duration
         if clip_duration < min_duration:
             min_duration = clip_duration
-
     # Load the extracted section clips with the same minimum duration
     # (i.e. the duration of the shortest video clip)
     video_clips = [
         VideoFileClip(path).set_duration(min_duration) for path in clip_output_paths
     ]
-    ##############################################################
-    # # Load the extracted section clips
-    # video_clips = [VideoFileClip(path) for path in clip_output_paths]
-    # # Synchronize the clips by setting the same duration for all
-    # duration = video_clips[0].duration
-    # for clip in video_clips:
-    #     clip = clip.set_duration(duration)
-    # # Load the extracted section clips with the same duration
-    # video_clips = [
-    #     VideoFileClip(path).set_duration(VideoFileClip(input_videos[0]).duration)
-    #     for path in clip_output_paths
-    # ]
-    ##############################################################
     return video_clips
 
 
